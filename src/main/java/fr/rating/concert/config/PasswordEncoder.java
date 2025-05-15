@@ -6,8 +6,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class BCryptPasswordEncoder {
-    private int strength;
+public class PasswordEncoder {
+    private int strength = 10;
 
     /**
      * Hash le mot de passe brut avec BCrypt

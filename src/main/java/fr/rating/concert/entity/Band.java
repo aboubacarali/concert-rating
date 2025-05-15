@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "bands")
 public class Band {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
