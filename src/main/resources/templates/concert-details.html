@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du concert</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Concert Rating</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/user/dashboard">Tableau de bord</a>
+            <a class="nav-link" href="/concerts">Liste des concerts</a>
+            <a th:if="${session.user != null}" class="nav-link" href="/concerts/add">Ajouter un concert</a>
+            <a th:if="${session.user != null}" class="nav-link" href="/user/logout">Déconnexion</a>
+            <a th:unless="${session.user != null}" class="nav-link" href="/user/login">Connexion</a>
+            <a th:unless="${session.user != null}" class="nav-link" href="/user/register">Inscription</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2>Détails du concert</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${concert.band.getName()}"></h5>
+            <p class="card-text"><strong>Lieu :</strong> <span th:text="${concert.hall.getName()}"></span> - <span th:text="${concert.hall.getCity()}"></span></p>
+            <p class="card-text"><strong>Date :</strong> <span th:text="${#temporals.format(concert.concertDate, 'dd/MM/yyyy')}"></span></p>
+        </div>
+    </div>
+
+    <h3>Notes</h3>
+    <table class="table table-striped mb-4">
+        <thead>
+        <tr>
+            <th>Score</th>
+            <th>Commentaire</th>
+            <th>Utilisateur</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="rating : ${ratings}">
+            <td th:text="${rating.score}"></td>
+            <td th:text="${rating.comment ?: 'Aucun commentaire'}"></td>
+            <td th:text="${rating.username}"></td>
+            <td th:text="${#temporals.format(rating.ratingDate, 'dd/MM/yyyy HH:mm')}"></td>
+        </tr>
+        <tr th:if="${ratings.isEmpty}">
+            <td colspan="4" class="text-center">Aucune note pour ce concert.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${user != null}">
+        <h4>Ajouter une note</h4>
+        <form th:action="@{/concerts/{id}/ratings(id=${concert.id})}" th:object="${ratingDto}" method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="score" class="form-label">Score (1-5)</label>
+                <select th:field="*{score}" class="form-select" id="score" required>
+                    <option value="">Choisir...</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <div th:if="${#fields.hasErrors('score')}" th:errors="*{score}" class="text-danger"></div>
+            </div>
+            <div class="mb-3">
+                <label for="comment" class="form-label">Commentaire (optionnel)</label>
+                <textarea th:field="*{comment}" class="form-control" id="comment" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter la note</button>
+            <a th:href="@{/concerts}" class="btn btn-secondary">Retour</a>
+        </form>
+    </div>
+    <div th:unless="${user != null}" class="alert alert-info">
+        Veuillez vous connecter pour ajouter une note.
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

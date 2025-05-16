@@ -6,17 +6,14 @@ import fr.rating.concert.dto.RegisterRequestDto;
 import fr.rating.concert.dto.UserResponseDto;
 import fr.rating.concert.entity.User;
 import fr.rating.concert.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserService {
-    @Autowired
     private UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder = new PasswordEncoder();
@@ -41,5 +38,10 @@ public class UserService {
             return new UserResponseDto(user.getUsername(), user.getEmail());
         }
         return null;
+    }
+
+    public Long getUserIdByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return user.getId();
     }
 }
